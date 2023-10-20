@@ -35,8 +35,7 @@ function play_round() {
 function get_result(player_choice, computer_choice) {
     // get the strings of the player and the computer and attribute 'rock' to 2, 'paper' to 3 and 'scissors' to 5
     var player_choice_number = get_choice_number(player_choice);
-    // const computer_choice_number = get_choice_number(computer_choice);
-    var computer_choice_number = 3;
+    var computer_choice_number = get_choice_number(computer_choice);
     // make three string variables. One for draws, one for losses and one for wins
     var draw_string = "Draw! Both you and the computer chose " + player_choice;
     var lose_string = "You Lose! " + computer_choice + " beats " + player_choice;

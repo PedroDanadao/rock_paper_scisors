@@ -3,12 +3,7 @@
 // print a welcome message to the player
 console.log("Hello. I want ot play a game"); // print how the player can choose each of the three options
 
-console.log("You choose your option by typing 'rock', 'paper' or 'scissors'"); // make a variable to record the points of the player, one for the points of the computer and 
-// one for the draws
-
-var player_points = 0;
-var computer_points = 0;
-var draws = 0; // make a function to get the computer choice based on a randomly generated number
+console.log("You choose your option by typing 'rock', 'paper' or 'scissors'\n\n"); // make a function to get the computer choice based on a randomly generated number
 
 function get_computer_choice() {
   // generate a number between 0 and 2
@@ -49,12 +44,13 @@ function play_round() {
 
 function get_result(player_choice, computer_choice) {
   // get the strings of the player and the computer and attribute 'rock' to 2, 'paper' to 3 and 'scissors' to 5
-  var player_choice_number = get_choice_number(player_choice);
-  var computer_choice_number = get_choice_number(computer_choice); // make three string variables. One for draws, one for losses and one for wins
+  var player_choice_number = get_choice_number(player_choice); // const computer_choice_number = get_choice_number(computer_choice);
+
+  var computer_choice_number = 3; // make three string variables. One for draws, one for losses and one for wins
 
   var draw_string = "Draw! Both you and the computer chose " + player_choice;
-  var lose_string = "You Lose! " + computer_choice_number + " beats " + player_choice_number;
-  var win_string = "You Win! " + player_choice_number + " beats " + computer_choice_number; // check if both numbers are equal, if so then announce it to the user and return a 'draw' value(0)
+  var lose_string = "You Lose! " + computer_choice + " beats " + player_choice;
+  var win_string = "You Win! " + player_choice + " beats " + computer_choice; // check if both numbers are equal, if so then announce it to the user and return a 'draw' value(0)
 
   if (player_choice_number === computer_choice_number) {
     console.log(draw_string);
@@ -118,17 +114,64 @@ function game() {
   // create a variable(i) to increment the number of matches between the user and the computer.
   // It will be necessary to use it alongside a while loop to deal with possible misspells
   // of the user. The variable will only increment when the user types a valid option
-  var i = 0; // make a loop to that will run five times, one for each try
+  var i = 0; // make a variable to record the points of the player, one for the points of the computer and 
+  // one for the draws
 
-  while (i < 5) {// call the function to play a round of rock paper scissors
-    // increment the player score, the computer score or the draw score based on the result of the compare function.
+  var player_points = 0;
+  var computer_points = 0;
+  var draws = 0; // make a loop to that will run five times, one for each try
+
+  while (i < 5) {
+    // call the function to play a round of rock paper scissors
+    var round_result = play_round(); // check if the round result is three. If so, then play another round without incrementing i
+
+    if (round_result === 3) {
+      continue;
+    } // increment the player score, the computer score or the draw score based on the result of the compare function.
     // For this, use a few math expressions based on the result of the comparison
-    // print in the console the current score
-    // print in the console that a new match will start
-    // increment the variable i in one
-    // compare the results between the player and the computer and announce the winner(if the results are the same)
-    // then announce a draw
+
+
+    player_points += Math.floor((round_result + 1) / 2);
+    computer_points += Math.floor((round_result - 1) / -2);
+    draws += (round_result * round_result - 1) / -1; // print in the console the current score
+
+    console.log("player points: " + player_points + "  |  computer_points: " + computer_points + "  |  draws: " + draws); // check if the current round is the last one. If not, then print that a new match will start
+
+    if (i != 4) {
+      // print in the console that a new match will start
+      console.log("New match starting\n\n");
+    } // increment the variable i in one
+
+
+    i++;
+  } // compare the results between the player and the computer and announce the winner(if the results are the same)
+  // then announce a draw
+
+
+  var results_string = '';
+
+  if (player_points > computer_points) {
+    results_string = "Congratulations! You Won The Game!";
+  } else if (player_points < computer_points) {
+    results_string = "Too Bad. You Lost The Game.";
+  } else {
+    results_string = "It's a Draw!";
   }
+
+  console.log(results_string);
+} // make a function just to test what will be done with the score
+
+
+function test_score(score_number_identifier) {
+  // make three variables for the win, lose and draw results their value will be based on the passed 
+  // score_number_identifier after running a few math expressions
+  var win = (score_number_identifier + 1) / 2;
+  win = Math.floor(win);
+  var lose = (score_number_identifier - 1) / -2;
+  lose = Math.floor(lose);
+  var draw = score_number_identifier * score_number_identifier - 1;
+  draw = draw / -1;
+  return;
 } // make a function to test some stuff
 
 
@@ -154,5 +197,10 @@ function tester() {
   result = get_result("scissors", "paper");
   result = get_result("scissors", "rock");
   result = get_result("scissors", "scissors");
+  test_score(1);
+  test_score(-1);
+  test_score(0);
   return;
 }
+
+game();
