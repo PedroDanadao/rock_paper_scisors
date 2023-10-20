@@ -1,7 +1,7 @@
 // print a welcome message to the player
 console.log("Hello. I want ot play a game")
 // print how the player can choose each of the three options
-console.log("You choose your option by typing 'rock', 'paper' or 'scissors'")
+console.log("You choose your option by typing 'rock', 'paper' or 'scissors'\n\n")
 
 // make a function to get the computer choice based on a randomly generated number
 function get_computer_choice() {
@@ -131,9 +131,12 @@ function game() {
     
         // print in the console the current score
         console.log(`player points: ${player_points}  |  computer_points: ${computer_points}  |  draws: ${draws}`);
-    
-        // print in the console that a new match will start
-        console.log("New match starting\n\n");
+        
+        // check if the current round is the last one. If not, then print that a new match will start
+        if (i != 4) {
+            // print in the console that a new match will start
+            console.log("New match starting\n\n");
+        }
     
         // increment the variable i in one
         i++;
@@ -143,10 +146,10 @@ function game() {
     // then announce a draw
     let results_string = '';
     if (player_points > computer_points) {
-        results_string = "Congratilations! You win!";
+        results_string = "Congratulations! You Won The Game!";
     }
     else if (player_points < computer_points) {
-        results_string = "Too Bad. You Lose";
+        results_string = "Too Bad. You Lost The Game.";
     }
     else {
         results_string = "It's a Draw!";

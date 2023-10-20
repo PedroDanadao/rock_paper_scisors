@@ -1,7 +1,7 @@
 // print a welcome message to the player
 console.log("Hello. I want ot play a game");
 // print how the player can choose each of the three options
-console.log("You choose your option by typing 'rock', 'paper' or 'scissors'");
+console.log("You choose your option by typing 'rock', 'paper' or 'scissors'\n\n");
 // make a function to get the computer choice based on a randomly generated number
 function get_computer_choice() {
     // generate a number between 0 and 2
@@ -35,7 +35,8 @@ function play_round() {
 function get_result(player_choice, computer_choice) {
     // get the strings of the player and the computer and attribute 'rock' to 2, 'paper' to 3 and 'scissors' to 5
     var player_choice_number = get_choice_number(player_choice);
-    var computer_choice_number = get_choice_number(computer_choice);
+    // const computer_choice_number = get_choice_number(computer_choice);
+    var computer_choice_number = 3;
     // make three string variables. One for draws, one for losses and one for wins
     var draw_string = "Draw! Both you and the computer chose " + player_choice;
     var lose_string = "You Lose! " + computer_choice + " beats " + player_choice;
@@ -110,8 +111,11 @@ function game() {
         draws += (round_result * round_result - 1) / -1;
         // print in the console the current score
         console.log("player points: " + player_points + "  |  computer_points: " + computer_points + "  |  draws: " + draws);
-        // print in the console that a new match will start
-        console.log("New match starting\n\n");
+        // check if the current round is the last one. If not, then print that a new match will start
+        if (i != 4) {
+            // print in the console that a new match will start
+            console.log("New match starting\n\n");
+        }
         // increment the variable i in one
         i++;
     }
@@ -119,10 +123,10 @@ function game() {
     // then announce a draw
     var results_string = '';
     if (player_points > computer_points) {
-        results_string = "Congratilations! You win!";
+        results_string = "Congratulations! You Won The Game!";
     }
     else if (player_points < computer_points) {
-        results_string = "Too Bad. You Lose";
+        results_string = "Too Bad. You Lost The Game.";
     }
     else {
         results_string = "It's a Draw!";
