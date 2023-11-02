@@ -1,6 +1,16 @@
 // get the DOM elements
 const buttonsList = document.querySelector(".buttons_list") as HTMLUListElement;
 const scoreSpan = document.querySelector(".score") as HTMLSpanElement;
+const logDiv = document.querySelector(".log") as HTMLDivElement;
+
+// These variables will be used to record the score between the player and the
+// computer
+let playerPoints = 0;
+let computerPoints = 0;
+let draws = 0;
+
+// make the eventListeners
+buttonsList.addEventListener("click", game);
 
 function get_computer_choice() {
     const choice_number = Math.floor(Math.random() * 3)
@@ -12,48 +22,43 @@ function get_computer_choice() {
     }
 }
 
-function play_round() {
+function playRound(player_choice: string) {
     console.log("Round Start")
 
-    const player_choice = prompt("Choose between rock paper and scissors by typing those options in the prompt");
     const computer_choice = get_computer_choice();
-
-    if (!(player_choice && check_typing(player_choice))) {
-        return 3;
-    }
 
     return get_result(player_choice, computer_choice);
 }
 
-function get_result(player_choice: string, computer_choice: string) {
-    const player_choice_number = get_choice_number(player_choice);
-    const computer_choice_number = get_choice_number(computer_choice);
+function get_result(playerChoice: string, computerChoice: string) {
+    const playerChoiceNumber = get_choice_number(playerChoice);
+    const computerChoiceNumber = get_choice_number(computerChoice);
 
-    const draw_string = `Draw! Both you and the computer chose ${player_choice}`;
-    const lose_string = `You Lose! ${computer_choice} beats ${player_choice}`;
-    const win_string = `You Win! ${player_choice} beats ${computer_choice}`;
+    const drawString = `\nDraw! Both you and the computer chose ${playerChoice}`;
+    const loseString = `\nYou Lose! ${computerChoice} beats ${playerChoice}`;
+    const winString = `\nYou Win! ${playerChoice} beats ${computerChoice}`;
 
-    if (player_choice_number === computer_choice_number) {
-        console.log(draw_string);
+    if (playerChoiceNumber === computerChoiceNumber) {
+        logDiv.innerText += drawString;
         return 0;
     }
 
-    if (2 * player_choice_number < computer_choice_number) {
-        console.log(win_string);
+    if (2 * playerChoiceNumber < computerChoiceNumber) {
+        logDiv.innerText += winString;
         return 1;
     }
 
-    if (2 * computer_choice_number < player_choice_number) {
-        console.log(lose_string);
+    if (2 * computerChoiceNumber < playerChoiceNumber) {
+        logDiv.innerText += loseString
         return -1;
     }
 
-    if (player_choice_number > computer_choice_number) {
-        console.log(win_string);
+    if (playerChoiceNumber > computerChoiceNumber) {
+        logDiv.innerText += winString;
         return 1;
     }
 
-    console.log(lose_string);
+    logDiv.innerText += loseString;
     return -1;
 }
 
@@ -75,45 +80,58 @@ function get_choice_number(choice_string: string) {
     }
 }
 
-function game() {
-    let i = 0;
+function game(event: Event) {
+    // Plays a round of the game and check if the player or the computer reached
+    // a score of five. If one has reached the score, then the game announces 
+    // the winner
 
-    let player_points = 0;
-    let computer_points = 0;
-    let draws = 0;
-
-    while (i < 5) {
-        const round_result = play_round();
-
-        if (round_result === 3) {
-            continue;
-        }
-
-        player_points += Math.floor((round_result + 1) / 2);
-        computer_points += Math.floor((round_result - 1) / -2);
-        draws += (round_result * round_result - 1) / -1;
-
-        console.log(`player points: ${player_points}  |  computer_points: ${computer_points}  |  draws: ${draws}`);
-
-        if (i != 4) {
-            console.log("New match starting\n\n");
-        }
-
-        i++;
-
-    }
-    let results_string = '';
-    if (player_points > computer_points) {
-        results_string = "Congratulations! You Won The Game!";
-    }
-    else if (player_points < computer_points) {
-        results_string = "Too Bad. You Lost The Game.";
-    }
-    else {
-        results_string = "It's a Draw!";
+    // There will be a check for the scores at the beginning. If all three are 
+    // zero then that means that a new game is being played, in that case the 
+    // log must be emptied
+    if (! (playerPoints | computerPoints | draws)) {
+        logDiv.innerText = '';
     }
 
-    console.log(results_string);
+    const eventTarget = event.target as HTMLButtonElement;
+    const playerChoice = eventTarget.innerText.toLowerCase();
+
+    const result = playRound(playerChoice);
+
+    // This is a way to increment the point without relying on switch case. It 
+    // is a simple logic that adds 1 to one of the results and 0 to the others.
+    // Just have in mind that when the player wins the result is 1, when he 
+    // loses the result is -1 and when it is a draw the result is 0
+    playerPoints += Math.floor( (result + 1) / 2 );
+    computerPoints += Math.floor( (result -1) / -2 );
+    draws += ( (result * result) - 1 ) / -1;
+
+    scoreSpan.innerText = `Player: ${playerPoints}`;
+    scoreSpan.innerText += `\nComputer: ${computerPoints}`;
+    scoreSpan.innerText += `\nDraws: ${draws}`;
+
+    if (playerPoints === 5) {
+        endGame("     Congratulations. You Won!      \n");
+    }
+    
+    else if(computerPoints === 5) {
+        endGame("          Too bad. You Lost        \n");
+    }
+}
+
+function endGame(gameEndString: string) {
+    logDiv.innerText = "\n-------------------------------------\n";
+    logDiv.innerText += gameEndString;
+    logDiv.innerText += "-------------------------------------\n";
+
+    logDiv.innerText += "To play another game, just choose one of the three options again";
+    
+    zeroScores();
+}
+
+function zeroScores() {
+    playerPoints = 0;
+    computerPoints = 0;
+    draws = 0;
 }
 
 function test_score(score_number_identifier: number) {
@@ -163,5 +181,3 @@ function tester() {
 
     return
 }
-
-game();

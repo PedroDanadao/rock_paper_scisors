@@ -1,141 +1,110 @@
-// print a welcome message to the player
-console.log("Hello. I want ot play a game");
-// print how the player can choose each of the three options
-console.log("You choose your option by typing 'rock', 'paper' or 'scissors'\n\n");
-// make a function to get the computer choice based on a randomly generated number
+// get the DOM elements
+var buttonsList = document.querySelector(".buttons_list");
+var scoreSpan = document.querySelector(".score");
+var logDiv = document.querySelector(".log");
+// These variables will be used to record the score between the player and the
+// computer
+var playerPoints = 0;
+var computerPoints = 0;
+var draws = 0;
+// make the eventListeners
+buttonsList.addEventListener("click", game);
 function get_computer_choice() {
-    // generate a number between 0 and 2
     var choice_number = Math.floor(Math.random() * 3);
-    // if the number is 0 then return 'rock', if it is 1 'paper' and if it is 2 'scissors'(use a switch case)
     switch (choice_number) {
         case 0: return 'rock';
         case 1: return 'paper';
         default: return 'scissors';
     }
 }
-// TODO: change the play round to get the player and computer choice instead of using them as parameters
-// make a function to compare the player choice with the computer choice
-function play_round() {
-    // print a message to show the user that the round has started
+function playRound(player_choice) {
     console.log("Round Start");
-    // get the player choice from the user using the prompt function and put it in a player_choice variable
-    var player_choice = prompt("Choose between rock paper and scissors by typing those options in the prompt");
-    // get the computer choice by using the function
     var computer_choice = get_computer_choice();
-    // check if the user typed a valid option
-    if (!(player_choice && check_typing(player_choice))) {
-        // if no valid option was types, then just end the function returning 3
-        return 3;
-    }
-    // return the result of the player choice against the computer choice
     return get_result(player_choice, computer_choice);
 }
-// make a function to get the result between two choices of the game. It will return 1 if the first choice wins,
-// -1 if it looses and 0 if they are the same. This function is mostly for testing things out
-function get_result(player_choice, computer_choice) {
-    // get the strings of the player and the computer and attribute 'rock' to 2, 'paper' to 3 and 'scissors' to 5
-    var player_choice_number = get_choice_number(player_choice);
-    var computer_choice_number = get_choice_number(computer_choice);
-    // make three string variables. One for draws, one for losses and one for wins
-    var draw_string = "Draw! Both you and the computer chose " + player_choice;
-    var lose_string = "You Lose! " + computer_choice + " beats " + player_choice;
-    var win_string = "You Win! " + player_choice + " beats " + computer_choice;
-    // check if both numbers are equal, if so then announce it to the user and return a 'draw' value(0)
-    if (player_choice_number === computer_choice_number) {
-        console.log(draw_string);
+function get_result(playerChoice, computerChoice) {
+    var playerChoiceNumber = get_choice_number(playerChoice);
+    var computerChoiceNumber = get_choice_number(computerChoice);
+    var drawString = "\nDraw! Both you and the computer chose " + playerChoice;
+    var loseString = "\nYou Lose! " + computerChoice + " beats " + playerChoice;
+    var winString = "\nYou Win! " + playerChoice + " beats " + computerChoice;
+    if (playerChoiceNumber === computerChoiceNumber) {
+        logDiv.innerText += drawString;
         return 0;
     }
-    // check if the double of the first number is less then the second number. If so then it is the case where the
-    // user chose a rock and the computer chose scissors. In that case, announce it to the user and return 
-    // the win value(1)
-    if (2 * player_choice_number < computer_choice_number) {
-        console.log(win_string);
+    if (2 * playerChoiceNumber < computerChoiceNumber) {
+        logDiv.innerText += winString;
         return 1;
     }
-    // check the opposite now. If the double of the second number is less that the first number. If so then announce
-    // that the user lost and return the loose value(0)
-    if (2 * computer_choice_number < player_choice_number) {
-        console.log(lose_string);
+    if (2 * computerChoiceNumber < playerChoiceNumber) {
+        logDiv.innerText += loseString;
         return -1;
     }
-    // check if the first number is more than the second number. If so then return a win value.
-    // if not then return a loose value(-1). I each case, announce it to the user
-    if (player_choice_number > computer_choice_number) {
-        console.log(win_string);
+    if (playerChoiceNumber > computerChoiceNumber) {
+        logDiv.innerText += winString;
         return 1;
     }
-    console.log(lose_string);
+    logDiv.innerText += loseString;
     return -1;
 }
-// make a function to check if a passed string in lower case is either 'rock', 'paper', or 'scissors'
 function check_typing(option_string) {
     var lower_case_string = option_string.toLowerCase();
-    if (lower_case_string === "rock" || lower_case_string === "paper" || lower_case_string === "scissors") {
+    if (lower_case_string === "rock" || lower_case_string === "paper" ||
+        lower_case_string === "scissors") {
         return true;
     }
     return false;
 }
-// make a function to get a number related to a string('rock', 'paper', 'scissors')
 function get_choice_number(choice_string) {
-    // use a switch case to get the number between 2, 3 and 5
     switch (choice_string) {
         case 'rock': return 2;
         case 'paper': return 3;
         default: return 5;
     }
 }
-// make a function game to play five matches of rock, paper, scissors
-function game() {
-    // create a variable(i) to increment the number of matches between the user and the computer.
-    // It will be necessary to use it alongside a while loop to deal with possible misspells
-    // of the user. The variable will only increment when the user types a valid option
-    var i = 0;
-    // make a variable to record the points of the player, one for the points of the computer and 
-    // one for the draws
-    var player_points = 0;
-    var computer_points = 0;
-    var draws = 0;
-    // make a loop to that will run five times, one for each try
-    while (i < 5) {
-        // call the function to play a round of rock paper scissors
-        var round_result = play_round();
-        // check if the round result is three. If so, then play another round without incrementing i
-        if (round_result === 3) {
-            continue;
-        }
-        // increment the player score, the computer score or the draw score based on the result of the compare function.
-        // For this, use a few math expressions based on the result of the comparison
-        player_points += Math.floor((round_result + 1) / 2);
-        computer_points += Math.floor((round_result - 1) / -2);
-        draws += (round_result * round_result - 1) / -1;
-        // print in the console the current score
-        console.log("player points: " + player_points + "  |  computer_points: " + computer_points + "  |  draws: " + draws);
-        // check if the current round is the last one. If not, then print that a new match will start
-        if (i != 4) {
-            // print in the console that a new match will start
-            console.log("New match starting\n\n");
-        }
-        // increment the variable i in one
-        i++;
+function game(event) {
+    // Plays a round of the game and check if the player or the computer reached
+    // a score of five. If one has reached the score, then the game announces 
+    // the winner
+    // There will be a check for the scores at the beginning. If all three are 
+    // zero then that means that a new game is being played, in that case the 
+    // log must be emptied
+    if (!(playerPoints | computerPoints | draws)) {
+        logDiv.innerText = '';
     }
-    // compare the results between the player and the computer and announce the winner(if the results are the same)
-    // then announce a draw
-    var results_string = '';
-    if (player_points > computer_points) {
-        results_string = "Congratulations! You Won The Game!";
+    var eventTarget = event.target;
+    var playerChoice = eventTarget.innerText.toLowerCase();
+    var result = playRound(playerChoice);
+    // This is a way to increment the point without relying on switch case. It 
+    // is a simple logic that adds 1 to one of the results and 0 to the others.
+    // Just have in mind that when the player wins the result is 1, when he 
+    // loses the result is -1 and when it is a draw the result is 0
+    playerPoints += Math.floor((result + 1) / 2);
+    computerPoints += Math.floor((result - 1) / -2);
+    draws += ((result * result) - 1) / -1;
+    scoreSpan.innerText = "Player: " + playerPoints;
+    scoreSpan.innerText += "\nComputer: " + computerPoints;
+    scoreSpan.innerText += "\nDraws: " + draws;
+    if (playerPoints === 5) {
+        endGame("     Congratulations. You Won!      \n");
     }
-    else if (player_points < computer_points) {
-        results_string = "Too Bad. You Lost The Game.";
+    else if (computerPoints === 5) {
+        endGame("          Too bad. You Lost        \n");
     }
-    else {
-        results_string = "It's a Draw!";
-    }
-    console.log(results_string);
 }
-// make a function just to test what will be done with the score
+function endGame(gameEndString) {
+    logDiv.innerText = "\n-------------------------------------\n";
+    logDiv.innerText += gameEndString;
+    logDiv.innerText += "-------------------------------------\n";
+    logDiv.innerText += "To play another game, just choose one of the three options again";
+    zeroScores();
+}
+function zeroScores() {
+    playerPoints = 0;
+    computerPoints = 0;
+    draws = 0;
+}
 function test_score(score_number_identifier) {
-    // make three variables for the win, lose and draw results their value will be based on the passed 
-    // score_number_identifier after running a few math expressions
     var win = (score_number_identifier + 1) / 2;
     win = Math.floor(win);
     var lose = (score_number_identifier - 1) / -2;
@@ -144,9 +113,7 @@ function test_score(score_number_identifier) {
     draw = draw / -1;
     return;
 }
-// make a function to test some stuff
 function tester() {
-    // A few variables will be created to check their value with the debugger
     var computer_choice = get_computer_choice();
     var choice_number_rock = get_choice_number("rock");
     var choice_number_paper = get_choice_number("paper");
@@ -172,4 +139,3 @@ function tester() {
     test_score(0);
     return;
 }
-game();
